@@ -119,7 +119,6 @@ MulticopterAttitudeControl::MulticopterAttitudeControl() :
 	_rates_prev_filtered.zero();
 	_rates_sp.zero();
 	_rates_int.zero();
-	_thrust_sp = 0.0f;
 	_att_control.zero();
 
 	/* initialize thermal corrections as we might not immediately get a topic update (only non-zero values) */
@@ -276,13 +275,11 @@ MulticopterAttitudeControl::vehicle_status_poll()
 		orb_copy(ORB_ID(vehicle_status), _vehicle_status_sub, &_vehicle_status);
 
 		/* set correct uORB ID, depending on if vehicle is VTOL or not */
-		if (_rates_sp_id == nullptr) {
+		if (_actuators_id == nullptr) {
 			if (_vehicle_status.is_vtol) {
-				_rates_sp_id = ORB_ID(mc_virtual_rates_setpoint);
 				_actuators_id = ORB_ID(actuator_controls_virtual_mc);
 
 			} else {
-				_rates_sp_id = ORB_ID(vehicle_rates_setpoint);
 				_actuators_id = ORB_ID(actuator_controls_0);
 			}
 		}
@@ -367,7 +364,6 @@ void
 MulticopterAttitudeControl::control_attitude(float dt)
 {
 	vehicle_attitude_setpoint_poll();
-	_thrust_sp = _v_att_sp.thrust;
 
 	/* prepare yaw weight from the ratio between roll/pitch and yaw gains */
 	Vector3f attitude_gain = _attitude_p;
@@ -459,7 +455,7 @@ Vector3f
 MulticopterAttitudeControl::pid_attenuations(float tpa_breakpoint, float tpa_rate)
 {
 	/* throttle pid attenuation factor */
-	float tpa = 1.0f - tpa_rate * (fabsf(_v_rates_sp.thrust) - tpa_breakpoint) / (1.0f - tpa_breakpoint);
+	float tpa = 1.0f - tpa_rate * (fabsf(_v_rates_sp.thrust_z) - tpa_breakpoint) / (1.0f - tpa_breakpoint);
 	tpa = fmaxf(TPA_RATE_LOWER_LIMIT, fminf(1.0f, tpa));
 
 	Vector3f pidAttenuationPerAxis;
@@ -537,7 +533,7 @@ MulticopterAttitudeControl::control_attitude_rates(float dt)
 	_rates_prev_filtered = rates_filtered;
 
 	/* update integral only if motors are providing enough thrust to be effective */
-	if (_thrust_sp > MIN_TAKEOFF_THRUST) {
+	if (_v_rates_sp.thrust_z > MIN_TAKEOFF_THRUST) {
 		for (int i = AXIS_INDEX_ROLL; i < AXIS_COUNT; i++) {
 			// Check for positive control saturation
 			bool positive_saturation =
@@ -687,14 +683,16 @@ MulticopterAttitudeControl::run()
 				_v_rates_sp.roll = _rates_sp(0);
 				_v_rates_sp.pitch = _rates_sp(1);
 				_v_rates_sp.yaw = _rates_sp(2);
-				_v_rates_sp.thrust = _thrust_sp;
+				_v_rates_sp.thrust_x = _v_att_sp.thrust_x;
+				_v_rates_sp.thrust_y = _v_att_sp.thrust_y;
+				_v_rates_sp.thrust_z = _v_att_sp.thrust_z;
 				_v_rates_sp.timestamp = hrt_absolute_time();
 
 				if (_v_rates_sp_pub != nullptr) {
-					orb_publish(_rates_sp_id, _v_rates_sp_pub, &_v_rates_sp);
+					orb_publish(ORB_ID(vehicle_rates_setpoint), _v_rates_sp_pub, &_v_rates_sp);
 
-				} else if (_rates_sp_id) {
-					_v_rates_sp_pub = orb_advertise(_rates_sp_id, &_v_rates_sp);
+				} else {
+					_v_rates_sp_pub = orb_advertise(ORB_ID(vehicle_rates_setpoint), &_v_rates_sp);
 				}
 
 			} else {
@@ -706,20 +704,21 @@ MulticopterAttitudeControl::run()
 							math::superexpo(-_manual_control_sp.x, _acro_expo_rp.get(), _acro_superexpo_rp.get()),
 							math::superexpo(_manual_control_sp.r, _acro_expo_y.get(), _acro_superexpo_y.get()));
 					_rates_sp = man_rate_sp.emult(_acro_rate_max);
-					_thrust_sp = _manual_control_sp.z;
 
 					/* publish attitude rates setpoint */
+					_v_rates_sp.timestamp = hrt_absolute_time();
 					_v_rates_sp.roll = _rates_sp(0);
 					_v_rates_sp.pitch = _rates_sp(1);
 					_v_rates_sp.yaw = _rates_sp(2);
-					_v_rates_sp.thrust = _thrust_sp;
-					_v_rates_sp.timestamp = hrt_absolute_time();
+					_v_rates_sp.thrust_x = 0.0f;
+					_v_rates_sp.thrust_y = 0.0f;
+					_v_rates_sp.thrust_z = _manual_control_sp.z;
 
 					if (_v_rates_sp_pub != nullptr) {
-						orb_publish(_rates_sp_id, _v_rates_sp_pub, &_v_rates_sp);
+						orb_publish(ORB_ID(vehicle_rates_setpoint), _v_rates_sp_pub, &_v_rates_sp);
 
-					} else if (_rates_sp_id) {
-						_v_rates_sp_pub = orb_advertise(_rates_sp_id, &_v_rates_sp);
+					} else {
+						_v_rates_sp_pub = orb_advertise(ORB_ID(vehicle_rates_setpoint), &_v_rates_sp);
 					}
 
 				} else {
@@ -728,7 +727,6 @@ MulticopterAttitudeControl::run()
 					_rates_sp(0) = _v_rates_sp.roll;
 					_rates_sp(1) = _v_rates_sp.pitch;
 					_rates_sp(2) = _v_rates_sp.yaw;
-					_thrust_sp = _v_rates_sp.thrust;
 				}
 			}
 
@@ -739,7 +737,7 @@ MulticopterAttitudeControl::run()
 				_actuators.control[0] = (PX4_ISFINITE(_att_control(0))) ? _att_control(0) : 0.0f;
 				_actuators.control[1] = (PX4_ISFINITE(_att_control(1))) ? _att_control(1) : 0.0f;
 				_actuators.control[2] = (PX4_ISFINITE(_att_control(2))) ? _att_control(2) : 0.0f;
-				_actuators.control[3] = (PX4_ISFINITE(_thrust_sp)) ? _thrust_sp : 0.0f;
+				_actuators.control[3] = (PX4_ISFINITE(_v_rates_sp.thrust_z)) ? _v_rates_sp.thrust_z : 0.0f;
 				_actuators.control[7] = _v_att_sp.landing_gear;
 				_actuators.timestamp = hrt_absolute_time();
 				_actuators.timestamp_sample = _sensor_gyro.timestamp;
@@ -781,7 +779,6 @@ MulticopterAttitudeControl::run()
 
 					_rates_sp.zero();
 					_rates_int.zero();
-					_thrust_sp = 0.0f;
 					_att_control.zero();
 
 					/* publish actuator controls */
