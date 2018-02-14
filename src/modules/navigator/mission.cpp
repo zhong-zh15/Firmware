@@ -1232,10 +1232,8 @@ Mission::heading_sp_update()
 			/* stop if positions are close together to prevent excessive yawing */
 			if (d_current > _navigator->get_acceptance_radius()) {
 				float yaw = get_bearing_to_next_waypoint(
-						    point_from_latlon[0],
-						    point_from_latlon[1],
-						    point_to_latlon[0],
-						    point_to_latlon[1]);
+						    point_from_latlon[0], point_from_latlon[1],
+						    point_to_latlon[0], point_to_latlon[1]);
 
 				/* always keep the back of the rotary wing pointing towards home */
 				if (_param_yawmode.get() == MISSION_YAWMODE_BACK_TO_HOME) {
