@@ -118,7 +118,7 @@ public:
 	VtolType(const VtolType &) = delete;
 	VtolType &operator=(const VtolType &) = delete;
 
-	virtual ~VtolType();
+	virtual ~VtolType() = default;
 
 	/**
 	 * Initialise.

@@ -47,10 +47,7 @@
 #include <float.h>
 
 Standard::Standard(VtolAttitudeControl *attc) :
-	VtolType(attc),
-	_pusher_throttle(0.0f),
-	_reverse_output(0.0f),
-	_airspeed_trans_blend_margin(0.0f)
+	VtolType(attc)
 {
 	_vtol_schedule.flight_mode = MC_MODE;
 	_vtol_schedule.transition_start = 0;
@@ -69,8 +66,6 @@ Standard::Standard(VtolAttitudeControl *attc) :
 	_params_handles_standard.reverse_output = param_find("VT_B_REV_OUT");
 	_params_handles_standard.reverse_delay = param_find("VT_B_REV_DEL");
 }
-
-Standard::~Standard() = default;
 
 void
 Standard::parameters_update()
