@@ -1740,7 +1740,6 @@ Commander::run()
 
 		estimator_check(&status_changed);
 
-
 		/* Update land detector */
 		orb_check(land_detector_sub, &updated);
 
