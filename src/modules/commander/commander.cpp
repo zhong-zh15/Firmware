@@ -637,8 +637,6 @@ Commander::handle_command(vehicle_status_s *status_local, const vehicle_command_
 			uint8_t custom_main_mode = (uint8_t)cmd.param2;
 			uint8_t custom_sub_mode = (uint8_t)cmd.param3;
 
-			transition_result_t arming_ret = TRANSITION_NOT_CHANGED;
-
 			transition_result_t main_ret = TRANSITION_NOT_CHANGED;
 
 			/* set HIL state */
@@ -752,15 +750,11 @@ Commander::handle_command(vehicle_status_s *status_local, const vehicle_command_
 				}
 			}
 
-			if ((hil_ret != TRANSITION_DENIED) && (arming_ret != TRANSITION_DENIED) && (main_ret != TRANSITION_DENIED)) {
+			if ((hil_ret != TRANSITION_DENIED) && (main_ret != TRANSITION_DENIED)) {
 				cmd_result = vehicle_command_s::VEHICLE_CMD_RESULT_ACCEPTED;
 
 			} else {
 				cmd_result = vehicle_command_s::VEHICLE_CMD_RESULT_TEMPORARILY_REJECTED;
-
-				if (arming_ret == TRANSITION_DENIED) {
-					mavlink_log_critical(&mavlink_log_pub, "Rejecting arming cmd");
-				}
 			}
 		}
 		break;
