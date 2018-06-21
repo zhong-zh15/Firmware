@@ -239,15 +239,6 @@ private:
 		_perf_airspeed(perf_alloc_once(PC_ELAPSED, "sim_airspeed_delay")),
 		_perf_sim_delay(perf_alloc_once(PC_ELAPSED, "sim_network_delay")),
 		_perf_sim_interval(perf_alloc(PC_INTERVAL, "sim_network_interval")),
-		_accel_pub(nullptr),
-		_baro_pub(nullptr),
-		_gyro_pub(nullptr),
-		_mag_pub(nullptr),
-		_flow_pub(nullptr),
-		_vision_position_pub(nullptr),
-		_vision_attitude_pub(nullptr),
-		_dist_pub(nullptr),
-		_battery_pub(nullptr),
 		_param_sub(-1),
 		_initialized(false),
 		_realtime_factor(1.0),
@@ -325,23 +316,23 @@ private:
 	perf_counter_t _perf_sim_interval;
 
 	// uORB publisher handlers
-	orb_advert_t _accel_pub;
-	orb_advert_t _baro_pub;
-	orb_advert_t _gyro_pub;
-	orb_advert_t _mag_pub;
-	orb_advert_t _flow_pub;
-	orb_advert_t _vision_position_pub;
-	orb_advert_t _vision_attitude_pub;
-	orb_advert_t _dist_pub;
-	orb_advert_t _battery_pub;
-	orb_advert_t _irlock_report_pub;
+	orb_advert_t _accel_pub{nullptr};
+	orb_advert_t _baro_pub{nullptr};
+	orb_advert_t _gyro_pub{nullptr};
+	orb_advert_t _mag_pub{nullptr};
+	orb_advert_t _flow_pub{nullptr};
+	orb_advert_t _vision_position_pub{nullptr};
+	orb_advert_t _vision_attitude_pub{nullptr};
+	orb_advert_t _dist_pub{nullptr};
+	orb_advert_t _battery_pub{nullptr};
+	orb_advert_t _irlock_report_pub{nullptr};
 
 	int				_param_sub;
 
-	bool _initialized;
-	double _realtime_factor;		///< How fast the simulation runs in comparison to real system time
-	hrt_abstime _last_sim_timestamp;
-	hrt_abstime _last_sitl_timestamp;
+	bool _initialized{false};
+	double _realtime_factor{0};		///< How fast the simulation runs in comparison to real system time
+	hrt_abstime _last_sim_timestamp{0};
+	hrt_abstime _last_sitl_timestamp{0};
 
 	// Lib used to do the battery calculations.
 	Battery _battery;
