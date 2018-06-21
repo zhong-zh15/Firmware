@@ -82,11 +82,6 @@ UBX::~UBX()
 {
 }
 
-int UBX_SIM::configure(unsigned &baudrate)
-{
-	return 0;
-}
-
 int	// -1 = error, 0 = no message handled, 1 = message handled, 2 = sat info message handled
 UBX_SIM::receive(const unsigned timeout)
 {

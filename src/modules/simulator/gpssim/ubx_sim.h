@@ -43,9 +43,8 @@ class UBX_SIM
 {
 public:
 	UBX_SIM(const int &fd, struct vehicle_gps_position_s *gps_position, struct satellite_info_s *satellite_info);
-	~UBX_SIM();
+	~UBX_SIM() = default;
 	int			receive(const unsigned timeout);
-	int			configure(unsigned &baudrate);
 
 private:
 	int			_fd;

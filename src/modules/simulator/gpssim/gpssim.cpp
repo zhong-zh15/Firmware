@@ -107,14 +107,10 @@ protected:
 private:
 
 	bool				_task_should_exit;				///< flag to make the main worker task exit
-	int				_serial_fd;					///< serial interface to GPS
-	unsigned			_baudrate;					///< current baudrate
-	char				_port[20];					///< device / serial port path
-	volatile int			_task;						///< worker task
-	bool				_healthy;					///< flag to signal if the GPS is ok
-	bool				_baudrate_changed;				///< flag to signal that the baudrate with the GPS has changed
-	bool				_mode_changed;					///< flag that the GPS mode has changed
-	//gps_driver_mode_t		_mode;						///< current mode
+
+
+	volatile int			_task{-1};						///< worker task
+
 	GPS_Sat_Info			*_Sat_Info;					///< instance of GPS sat info data object
 	struct vehicle_gps_position_s	_report_gps_pos;				///< uORB topic for gps position
 	orb_advert_t			_report_gps_pos_pub;				///< uORB pub for gps position
@@ -145,11 +141,6 @@ private:
 	void				task_main();
 
 	/**
-	 * Set the baudrate of the UART to the GPS
-	 */
-	int				set_baudrate(unsigned baud);
-
-	/**
 	 * Send a reset command to the GPS
 	 */
 	void				cmd_reset();
@@ -175,10 +166,6 @@ GPSSIM::GPSSIM(const char *uart_path, bool fake_gps, bool enable_sat_info,
 	       int fix_type, int num_sat, int noise_multiplier) :
 	VirtDevObj("gps", GPSSIM_DEVICE_PATH, nullptr, 1e6 / 10),
 	_task_should_exit(false),
-	//_healthy(false),
-	//_mode_changed(false),
-	//_mode(GPS_DRIVER_MODE_UBX),
-	//_Helper(nullptr),
 	_Sat_Info(nullptr),
 	_report_gps_pos_pub(nullptr),
 	_p_report_sat_info(nullptr),
@@ -374,7 +361,6 @@ GPSSIM::print_info()
 	//GPS Mode
 	PX4_INFO("protocol: SIM");
 
-	PX4_INFO("port: %s, baudrate: %d, status: %s", _port, _baudrate, (_healthy) ? "OK" : "NOT OK");
 	PX4_INFO("sat info: %s, noise: %d, jamming detected: %s",
 		 (_p_report_sat_info != nullptr) ? "enabled" : "disabled",
 		 _report_gps_pos.noise_per_ms,
