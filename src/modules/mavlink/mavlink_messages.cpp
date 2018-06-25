@@ -2017,6 +2017,7 @@ protected:
 					msg.covariance[i] = est.covariances[i];
 				}
 
+				// TODO: fix misuse
 				msg.covariance[10] = est.health_flags;
 				msg.covariance[11] = est.timeout_flags;
 
