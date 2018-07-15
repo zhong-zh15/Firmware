@@ -1,6 +1,6 @@
 /****************************************************************************
  *
- *   Copyright (c) 2017 PX4 Development Team. All rights reserved.
+ *   Copyright (c) 2018 PX4 Development Team. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -31,25 +31,6 @@
  *
  ****************************************************************************/
 
-/**
- * @file usage.cpp
- * Note: this file is not used in the build, it's just for documenting the module
- */
+#pragma once
 
-#include <px4_module.h>
-
-static void
-usage()
-{
-	PRINT_MODULE_DESCRIPTION(
-		R"DESCR_STR(
-Utility to listen on uORB topics and print the data to the console.
-
-Limitation: it can only listen to the first instance of a topic.
-
-)DESCR_STR");
-
-	PRINT_MODULE_USAGE_NAME_SIMPLE("listener", "command");
-	PRINT_MODULE_USAGE_ARG("<topic_name> [<num_msgs>]", "uORB topic name and optionally number of messages (default=1)", false);
-}
-
+void listener_generated(char *topic_name, int topic_instance, int topic_rate, int num_msgs);
