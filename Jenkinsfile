@@ -9,7 +9,7 @@ pipeline {
 
           def docker_base = "px4io/px4-dev-base:2018-03-30"
           def docker_nuttx = "px4io/px4-dev-nuttx:2018-03-30"
-          def docker_ros = "px4io/px4-dev-ros:2018-06-19"
+          def docker_ros = "px4io/px4-dev-ros:2018-07-19"
           def docker_rpi = "px4io/px4-dev-raspi:2018-03-30"
           def docker_armhf = "px4io/px4-dev-armhf:2017-12-30"
           def docker_arch = "px4io/px4-dev-base-archlinux:2018-03-30"
@@ -248,7 +248,7 @@ pipeline {
         stage('test mission (code coverage)') {
           agent {
             docker {
-              image 'px4io/px4-dev-ros:2018-06-19'
+              image 'px4io/px4-dev-ros:2018-07-19'
               args '-e CCACHE_BASEDIR=$WORKSPACE -v ${CCACHE_DIR}:${CCACHE_DIR}:rw -e HOME=$WORKSPACE'
             }
           }
@@ -266,7 +266,7 @@ pipeline {
         stage('test avoidance') {
           agent {
             docker {
-              image 'px4io/px4-dev-ros:2018-06-19'
+              image 'px4io/px4-dev-ros:2018-07-19'
               args '-e CCACHE_BASEDIR=$WORKSPACE -v ${CCACHE_DIR}:${CCACHE_DIR}:rw -e HOME=$WORKSPACE'
             }
           }
@@ -305,7 +305,7 @@ pipeline {
         // stage('tests (code coverage)') {
         //   agent {
         //     docker {
-        //       image 'px4io/px4-dev-ros:2018-06-19'
+        //       image 'px4io/px4-dev-ros:2018-07-19'
         //       args '-e CCACHE_BASEDIR=$WORKSPACE -v ${CCACHE_DIR}:${CCACHE_DIR}:rw'
         //     }
         //   }
@@ -345,7 +345,7 @@ pipeline {
         stage('ROS vtol standard mission') {
           agent {
             docker {
-              image 'px4io/px4-dev-ros:2018-06-19'
+              image 'px4io/px4-dev-ros:2018-07-19'
               args '-e CCACHE_BASEDIR=$WORKSPACE -v ${CCACHE_DIR}:${CCACHE_DIR}:rw -e HOME=$WORKSPACE'
             }
           }
@@ -379,7 +379,7 @@ pipeline {
         stage('ROS vtol tailsitter mission') {
           agent {
             docker {
-              image 'px4io/px4-dev-ros:2018-06-19'
+              image 'px4io/px4-dev-ros:2018-07-19'
               args '-e CCACHE_BASEDIR=$WORKSPACE -v ${CCACHE_DIR}:${CCACHE_DIR}:rw -e HOME=$WORKSPACE'
             }
           }
@@ -413,7 +413,7 @@ pipeline {
         stage('ROS vtol tiltrotor mission') {
           agent {
             docker {
-              image 'px4io/px4-dev-ros:2018-06-19'
+              image 'px4io/px4-dev-ros:2018-07-19'
               args '-e CCACHE_BASEDIR=$WORKSPACE -v ${CCACHE_DIR}:${CCACHE_DIR}:rw -e HOME=$WORKSPACE'
             }
           }
@@ -447,7 +447,7 @@ pipeline {
         stage('ROS vtol mission new 2') {
           agent {
             docker {
-              image 'px4io/px4-dev-ros:2018-06-19'
+              image 'px4io/px4-dev-ros:2018-07-19'
               args '-e CCACHE_BASEDIR=$WORKSPACE -v ${CCACHE_DIR}:${CCACHE_DIR}:rw -e HOME=$WORKSPACE'
             }
           }
@@ -481,7 +481,7 @@ pipeline {
         stage('ROS vtol mission old 1') {
           agent {
             docker {
-              image 'px4io/px4-dev-ros:2018-06-19'
+              image 'px4io/px4-dev-ros:2018-07-19'
               args '-e CCACHE_BASEDIR=$WORKSPACE -v ${CCACHE_DIR}:${CCACHE_DIR}:rw -e HOME=$WORKSPACE'
             }
           }
@@ -515,7 +515,7 @@ pipeline {
         stage('ROS vtol mission old 2') {
           agent {
             docker {
-              image 'px4io/px4-dev-ros:2018-06-19'
+              image 'px4io/px4-dev-ros:2018-07-19'
               args '-e CCACHE_BASEDIR=$WORKSPACE -v ${CCACHE_DIR}:${CCACHE_DIR}:rw -e HOME=$WORKSPACE'
             }
           }
@@ -549,7 +549,7 @@ pipeline {
         stage('ROS MC mission box (EKF2)') {
           agent {
             docker {
-              image 'px4io/px4-dev-ros:2018-06-19'
+              image 'px4io/px4-dev-ros:2018-07-19'
               args '-e CCACHE_BASEDIR=$WORKSPACE -v ${CCACHE_DIR}:${CCACHE_DIR}:rw -e HOME=$WORKSPACE'
             }
           }
@@ -583,7 +583,7 @@ pipeline {
 	stage('ROS MC mission box (LPE)') {
           agent {
             docker {
-              image 'px4io/px4-dev-ros:2018-06-19'
+              image 'px4io/px4-dev-ros:2018-07-19'
               args '-e CCACHE_BASEDIR=$WORKSPACE -v ${CCACHE_DIR}:${CCACHE_DIR}:rw -e HOME=$WORKSPACE'
             }
           }
@@ -614,7 +614,7 @@ pipeline {
         stage('ROS offboard att') {
           agent {
             docker {
-              image 'px4io/px4-dev-ros:2018-06-19'
+              image 'px4io/px4-dev-ros:2018-07-19'
               args '-e CCACHE_BASEDIR=$WORKSPACE -v ${CCACHE_DIR}:${CCACHE_DIR}:rw -e HOME=$WORKSPACE'
             }
           }
@@ -648,7 +648,7 @@ pipeline {
         stage('ROS offboard pos') {
           agent {
             docker {
-              image 'px4io/px4-dev-ros:2018-06-19'
+              image 'px4io/px4-dev-ros:2018-07-19'
               args '-e CCACHE_BASEDIR=$WORKSPACE -v ${CCACHE_DIR}:${CCACHE_DIR}:rw -e HOME=$WORKSPACE'
             }
           }
