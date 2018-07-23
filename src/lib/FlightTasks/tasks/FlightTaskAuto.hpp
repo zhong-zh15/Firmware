@@ -84,13 +84,16 @@ protected:
 	WaypointType _type{WaypointType::idle}; /**< Type of current target triplet. */
 	uORB::Subscription<home_position_s> *_sub_home_position{nullptr};
 
+	DEFINE_PARAMETERS_CUSTOM_PARENT(FlightTask,
+					(ParamFloat<px4::params::MPC_XY_CRUISE>) MPC_XY_CRUISE, /**< Default mc cruise speed.*/
+					(ParamFloat<px4::params::NAV_ACC_RAD>) NAV_ACC_RAD, // acceptance radius at which waypoints are updated
+					(ParamInt<px4::params::MPC_YAW_MODE>) MPC_YAW_MODE /**< Defines how heading is executed. */
+				       )
+
 private:
 	matrix::Vector2f _lock_position_xy{NAN, NAN};
 
 	uORB::Subscription<position_setpoint_triplet_s> *_sub_triplet_setpoint{nullptr};
-
-	DEFINE_PARAMETERS_CUSTOM_PARENT(FlightTask,
-					(ParamFloat<px4::params::MPC_XY_CRUISE>) MPC_XY_CRUISE); /**< Default mc cruise speed.*/
 
 	map_projection_reference_s _reference_position{}; /**< Structure used to project lat/lon setpoint into local frame. */
 	float _reference_altitude = NAN;  /**< Altitude relative to ground. */
@@ -99,4 +102,5 @@ private:
 	bool _evaluateTriplets(); /**< Checks and sets triplets. */
 	bool _isFinite(const position_setpoint_s sp); /**< Checks if all waypoint triplets are finite. */
 	bool _evaluateGlobalReference(); /**< Check is global reference is available. */
+	void _set_heading_from_mode(); /**< @see  MPC_YAW_MODE */
 };

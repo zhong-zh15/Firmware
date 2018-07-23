@@ -68,7 +68,6 @@ protected:
 	DEFINE_PARAMETERS_CUSTOM_PARENT(FlightTaskAuto,
 					(ParamFloat<px4::params::MPC_LAND_SPEED>) MPC_LAND_SPEED,
 					(ParamFloat<px4::params::MPC_CRUISE_90>) MPC_CRUISE_90, // speed at corner when angle is 90 degrees
-					(ParamFloat<px4::params::NAV_ACC_RAD>) NAV_ACC_RAD, // acceptance radius at which waypoints are updated
 					(ParamFloat<px4::params::MIS_YAW_ERR>) MIS_YAW_ERR, // yaw-error threshold
 					(ParamFloat<px4::params::MPC_LAND_ALT1>) MPC_LAND_ALT1, // altitude at which speed limit downwards reaches maximum speed
 					(ParamFloat<px4::params::MPC_LAND_ALT2>) MPC_LAND_ALT2, // altitude at which speed limit downwards reached minimum speed
